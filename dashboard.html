@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bundu | Complaint desk</title>
+  <style>
+    :root {
+      --ink: #18212b;
+      --muted: #687582;
+      --paper: #f4f1ea;
+      --white: #fff;
+      --line: #dfe3e4;
+      --navy: #172d3d;
+      --blue: #356b83;
+      --green: #32735c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font: 14px/1.5 Georgia, serif;
+    }
+
+    header {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .header-container {
+      padding: 34px max(22px, calc((100% - 1180px) / 2));
+    }
+
+    header p {
+      margin: 0 0 5px;
+      color: #d9bd78;
+      font: 600 11px Arial, sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 400;
+    }
+
+    header span {
+      color: #c7d0d5;
+      font: 13px Arial, sans-serif;
+    }
+
+    /* Modern Navigation Bar Styles */
+    .staff-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px max(22px, calc((100% - 1180px) / 2));
+      background: rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 24px;
+      text-decoration: none;
+      color: #a0adb8;
+      font-size: 13px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+    }
+
+    .nav-link:hover {
+      color: #d9bd78;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      background: #d9bd78;
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .nav-link.active .nav-icon {
+      stroke: var(--navy);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .nav-text {
+      display: none;
+    }
+
+    /* Show nav text on medium screens and up */
+    @media (min-width: 640px) {
+      .nav-text {
+        display: inline;
+      }
+    }
+
+    /* Responsive navigation for mobile */
+    @media (max-width: 640px) {
+      .staff-nav {
+        gap: 4px;
+        padding: 10px 8px;
+      }
+
+      .nav-link {
+        padding: 6px 8px;
+        border-radius: 8px;
+      }
+    }
+
+    main {
+      max-width: 1180px;
+      margin: auto;
+      padding: 26px 22px 60px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .stats {
+      display: flex;
+      gap: 28px;
+    }
+
+    .stat strong {
+      display: block;
+      font: 700 24px Arial, sans-serif;
+    }
+
+    .meta {
+      color: var(--muted);
+      font: 12px Arial, sans-serif;
+    }
+
+    select, textarea, button {
+      font: inherit;
+    }
+
+    select, textarea {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px;
+      border-radius: 3px;
+    }
+
+    .desk {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .list, .detail {
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .row {
+      border-bottom: 1px solid var(--line);
+      padding: 16px;
+      cursor: pointer;
+    }
+
+    .row:hover, .row.selected {
+      background: #fbf8f0;
+    }
+
+    .row-top, .row-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .row h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 400;
+    }
+
+    .row p {
+      margin: 8px 0;
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font: 600 11px Arial, sans-serif;
+      background: #eef0ef;
+    }
+
+    .tag.open {
+      background: #fff0d2;
+      color: #825b16;
+    }
+
+    .tag.review {
+      background: #e5f0f4;
+      color: var(--blue);
+    }
+
+    .tag.resolved {
+      background: #e3f1e9;
+      color: var(--green);
+    }
+
+    .detail {
+      padding: 20px;
+      position: sticky;
+      top: 18px;
+      min-height: 300px;
+    }
+
+    .detail h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+      font-weight: 400;
+    }
+
+    .facts {
+      display: grid;
+      gap: 10px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 15px;
+      margin-bottom: 16px;
+    }
+
+    .facts div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font: 13px Arial, sans-serif;
+    }
+
+    .facts span {
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .detail h3 {
+      font: 700 11px Arial, sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 18px 0 6px;
+    }
+
+    .detail p {
+      white-space: pre-wrap;
+      margin: 0;
+    }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 92px;
+      font-family: Arial, sans-serif;
+    }
+
+    button {
+      border: 0;
+      border-radius: 3px;
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .empty {
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .error {
+      color: #c41e3a;
+      font: 600 12px Arial, sans-serif;
+      padding: 8px 0;
+    }
+
+    /* Dashboard Sections Styling */
+    .dashboard-section {
+      display: block;
+    }
+
+    .dashboard-section.hidden {
+      display: none;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 400;
+      margin: 0 0 20px;
+      color: var(--ink);
+    }
+
+    .section-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 20px;
+      border-radius: 4px;
+    }
+
+    .card h3 {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 12px 16px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font: 14px Arial, sans-serif;
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font: 13px Arial, sans-serif;
+      background: white;
+    }
+
+    .table-container {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font: 14px Arial, sans-serif;
+    }
+
+    .data-table thead {
+      background: #f9f9f9;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .data-table tbody tr:hover {
+      background: #fbf8f0;
+    }
+
+    .data-table .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px !important;
+    }
+
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .table-item {
+      background: var(--white);
+      border: 2px solid var(--line);
+      padding: 20px;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .table-item:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .table-item.occupied {
+      background: #fef3e2;
+      border-color: #d9bd78;
+    }
+
+    .table-number {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .table-status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .menu-item {
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 16px;
+      border-radius: 4px;
+    }
+
+    .menu-item-name {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .menu-item-price {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .inventory-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .inventory-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border-left: 4px solid var(--line);
+    }
+
+    .inventory-item.low {
+      border-left-color: #c41e3a;
+      background: #fff5f5;
+    }
+
+    .inventory-name {
+      font-weight: 600;
+    }
+
+    .inventory-quantity {
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div>
+        <p>Bundu restaurant / service desk</p>
+        <h1>Staff Dashboard</h1>
+        <span>Manage your restaurant operations efficiently.</span>
+      </div>
+    </div>
+
+    <!-- Modern Navigation Bar -->
+    <nav class="staff-nav">
+      <a href="#" data-section="service" class="nav-link {% if current_section == 'service' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+        <span class="nav-text">Service</span>
+      </a>
+      <a href="#" data-section="orders" class="nav-link {% if current_section == 'orders' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path><path d="M14 8H8"></path><path d="M16 12H8"></path><path d="M13 16H8"></path></svg>
+        <span class="nav-text">Orders</span>
+      </a>
+      <a href="#" data-section="tables" class="nav-link {% if current_section == 'tables' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"></path><path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"></path><path d="M5 18v2"></path><path d="M19 18v2"></path></svg>
+        <span class="nav-text">Floor</span>
+      </a>
+      <a href="#" data-section="menu" class="nav-link {% if current_section == 'menu' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path><path d="m2.1 21.8 6.4-6.3"></path><path d="m19 5-7 7"></path></svg>
+        <span class="nav-text">Menu</span>
+      </a>
+      <a href="#" data-section="pantry" class="nav-link {% if current_section == 'pantry' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
+        <span class="nav-text">Pantry</span>
+      </a>
+      <a href="#" data-section="shifts" class="nav-link {% if current_section == 'shifts' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="nav-text">Shifts</span>
+      </a>
+      <a href="#" data-section="complaints" class="nav-link {% if current_section == 'complaints' %}active{% endif %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+        <span class="nav-text">Complaints</span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- SERVICE SECTION -->
+    <section id="section-service" class="dashboard-section {% if current_section != 'service' %}hidden{% endif %}">
+      <div class="toolbar">
+        <h2 class="section-title">Service Dashboard</h2>
+      </div>
+      <div class="section-content">
+        <div class="card">
+          <h3>Service Overview</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="service-active-orders">0</div>
+              <div class="stat-label">Active Orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="service-occupied-tables">0</div>
+              <div class="stat-label">Occupied Tables</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="service-pending-items">0</div>
+              <div class="stat-label">Pending Items</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="service-open-issues">0</div>
+              <div class="stat-label">Open Issues</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Quick Actions</h3>
+          <div class="action-buttons">
+            <button class="action-btn">View All Orders</button>
+            <button class="action-btn">Manage Tables</button>
+            <button class="action-btn">Check Inventory</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS SECTION -->
+    <section id="section-orders" class="dashboard-section {% if current_section != 'orders' %}hidden{% endif %}">
+      <div class="toolbar">
+        <h2 class="section-title">Orders Management</h2>
+        <div class="filter-group">
+          <select id="orders-filter" class="filter-select">
+            <option>All Orders</option>
+            <option>Received</option>
+            <option>Preparing</option>
+            <option>Ready</option>
+            <option>Completed</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="section-content">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Table</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Rating</th>
+                <th>Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="orders-list">
+              <tr><td colspan="7" class="empty">No orders found</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABLES SECTION -->
+    <section id="section-tables" class="dashboard-section {% if current_section != 'tables' %}hidden{% endif %}">
+      <div class="toolbar">
+        <h2 class="section-title">Floor Management</h2>
+      </div>
+      <div class="section-content">
+        <div class="tables-grid" id="tables-grid">
+          <div class="empty">Loading tables...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU SECTION -->
+    <section id="section-menu" class="dashboard-section {% if current_section != 'menu' %}hidden{% endif %}">
+      <div class="toolbar">
+        <h2 class="section-title">Menu Management</h2>
+      </div>
+      <div class="section-content">
+        <div class="menu-container">
+          <div class="menu-list" id="menu-list">
+            <div class="empty">Loading menu items...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTRY SECTION -->
+    <section id="section-pantry" class="dashboard-section {% if current_section != 'pantry' %}hidden{% endif %}">
+      <div class="toolbar">
+        <h2 class="section-title">Pantry & Inventory</h2>
+      </div>
+      <div class="section-content">
+        <div class="card">
+          <h3>Ingredient Status</h3>
+          <div class="inventory-list" id="inventory-list">
+            <div class="empty">Loading inventory...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHIFTS SECTION -->
+    <section id="section-shifts" class="dashboard-section {% if current_section != 'shifts' %}hidden{% endif %}">
+      <div class="toolbar">
+        <h2 class="section-title">Staff Shifts</h2>
+      </div>
+      <div class="section-content">
+        <div class="card">
+          <h3>Current Shift</h3>
+          <div class="shift-info">
+            <p>Shift management coming soon</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPLAINTS SECTION -->
+    <section id="section-complaints" class="dashboard-section {% if current_section != 'complaints' %}hidden{% endif %}">
+      <div class="toolbar">
+        <div class="stats" id="stats"></div>
+        <div>
+          <label class="meta">
+            View
+            <select id="filter">
+              <option>All</option>
+              <option>Open</option>
+              <option>Under Review</option>
+              <option>Waiting for Customer</option>
+              <option>Resolved</option>
+            </select>
+          </label>
+          <button type="button" id="refresh-complaints">Refresh complaints</button>
+        </div>
+      </div>
+
+      <p class="error" id="error"></p>
+
+      <div class="desk">
+        <section class="list" id="list"></section>
+        <aside class="detail" id="detail">
+          <div class="empty">Select a complaint to view its order and customer details.</div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const states = ['Open', 'Under Review', 'Waiting for Customer', 'Resolved'];
+    let complaints = [];
+    let selected = null;
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (value = '') => String(value).replace(/[&<>'"]/g, (c) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[c]));
+
+    function tag(status) {
+      return `<span class="tag ${status === 'Resolved' ? 'resolved' : status === 'Under Review' ? 'review' : 'open'}">
+        ${esc(status)}
+      </span>`;
+    }
+
+    function render() {
+      const filter = $('filter').value;
+      const visible = filter === 'All' ? complaints : complaints.filter((c) => c.status === filter);
+
+      $('stats').innerHTML = states
+        .slice(0, 3)
+        .map(
+          (s) => `<div class="stat">
+            <strong>${complaints.filter((c) => c.status === s).length}</strong>
+            <small class="meta">${s}</small>
+          </div>`
+        )
+        .join('');
+
+      $('list').innerHTML = visible.length
+        ? visible
+            .map(
+              (c) => `<article class="row ${selected?.id === c.id ? 'selected' : ''}" data-id="${c.id}">
+              <div class="row-top">
+                <h2>${esc(c.reference || `CMP-${c.id}`)}</h2>
+                ${tag(c.status)}
+              </div>
+              <p>${esc(c.order_number || `Order #${c.order_id}`)} · ${esc(c.customer_name)} · ${esc(c.category || 'Complaint')}</p>
+              <div class="row-bottom">
+                <span class="meta">${esc(c.waiter_firstname ? `Waiter ${c.waiter_firstname} ${c.waiter_lastname}` : 'Waiter unassigned')}</span>
+                <span class="meta">${new Date(c.created_at).toLocaleString()}</span>
+              </div>
+            </article>`
+            )
+            .join('')
+        : '<div class="empty">No complaints in this view.</div>';
+
+      if (selected) renderDetail();
+    }
+
+    function renderDetail() {
+      const c = selected;
+      const items = JSON.parse(c.items || '[]');
+
+      $('detail').innerHTML = `
+        <h2>${esc(c.reference || `CMP-${c.id}`)}</h2>
+        <div class="facts">
+          <div>Order <span>${esc(c.order_number || `#${c.order_id}`)}</span></div>
+          <div>Customer <span>${esc(c.customer_name)}<br>${esc(c.customer_email)}</span></div>
+          <div>Waiter <span>${esc(c.waiter_firstname ? `${c.waiter_firstname} ${c.waiter_lastname}` : 'Unassigned')}</span></div>
+          <div>Submitted <span>${new Date(c.created_at).toLocaleString()}</span></div>
+        </div>
+        <h3>Items ordered</h3>
+        <p>${esc(items.map((i) => `${i.quantity} x ${i.name}`).join(', ') || 'Order details unavailable')}</p>
+        <h3>${esc(c.category || 'Complaint')} · ${esc(c.severity || '')}</h3>
+        <p>${esc(c.description || c.message)}</p>
+        <h3>Manager response</h3>
+        <textarea id="response" placeholder="Type your response to the complaint...">${esc(c.manager_response || '')}</textarea>
+        <button type="button" id="send">Send response and resolve</button>
+        <div id="detail-error" class="error"></div>
+      `;
+
+      $('send').onclick = sendResponse;
+    }
+
+    async function load() {
+      const refreshButton = $('refresh-complaints');
+      refreshButton.disabled = true;
+      try {
+        const r = await fetch('/api/complaints');
+        if (!r.ok) throw Error('Could not load complaints.');
+        complaints = await r.json();
+        selected = complaints.find((c) => c.id === selected?.id) || selected;
+        $('error').textContent = '';
+        render();
+      } catch (e) {
+        $('error').textContent = e.message;
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    async function sendResponse() {
+      const text = $('response').value.trim();
+      if (!text) {
+        $('detail-error').textContent = 'Write a response first.';
+        return;
+      }
+
+      const r = await fetch(`/api/complaints/${selected.id}/response`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response: text })
+      });
+
+      if (!r.ok) {
+        $('detail-error').textContent = 'Could not save response.';
+        return;
+      }
+
+      selected = await r.json();
+      await load();
+    }
+
+    // Event listeners
+    $('list').onclick = (e) => {
+      const row = e.target.closest('.row');
+      if (!row) return;
+      selected = complaints.find((c) => c.id === Number(row.dataset.id));
+      render();
+    };
+
+    $('filter').onchange = render;
+    $('refresh-complaints').onclick = load;
+
+    // Navigation handler
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = link.dataset.section;
+        
+        // Hide all sections
+        document.querySelectorAll('.dashboard-section').forEach(sec => {
+          sec.classList.add('hidden');
+        });
+        
+        // Show the selected section
+        const targetSection = document.getElementById(`section-${section}`);
+        if (targetSection) {
+          targetSection.classList.remove('hidden');
+        }
+        
+        // Update active navigation link
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        
+        // Update URL
+        window.history.pushState(null, '', `/dashboard/${section}`);
+        
+        // Load section-specific data
+        loadSectionData(section);
+      });
+    });
+
+    function loadSectionData(section) {
+      switch(section) {
+        case 'service':
+          loadServiceData();
+          break;
+        case 'orders':
+          loadOrdersData();
+          break;
+        case 'tables':
+          loadTablesData();
+          break;
+        case 'menu':
+          loadMenuData();
+          break;
+        case 'pantry':
+          loadPantryData();
+          break;
+        case 'shifts':
+          // Shifts data loading
+          break;
+        case 'complaints':
+          load();
+          break;
+      }
+    }
+
+    function loadServiceData() {
+      // Update service dashboard statistics
+      fetch('/api/orders')
+        .then(r => r.json())
+        .then(orders => {
+          document.getElementById('service-active-orders').textContent = orders.length;
+        })
+        .catch(e => console.log('Error loading orders:', e));
+    }
+
+    function loadOrdersData() {
+      fetch('/api/orders')
+        .then(r => r.json())
+        .then(orders => {
+          const tbody = document.getElementById('orders-list');
+          if (orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty">No orders found</td></tr>';
+            return;
+          }
+          tbody.innerHTML = orders.map(order => `
+            <tr>
+              <td>#${order.id}</td>
+              <td>${order.table_number || 'N/A'}</td>
+              <td>${(order.items ? order.items.length : 0)} items</td>
+              <td><span class="tag ${order.status.toLowerCase().replace(' ', '-')}">${order.status}</span></td>
+              <td>${order.rating == null ? 'Not rated' : `${order.rating}/5`}</td>
+              <td>${new Date(order.created_at).toLocaleTimeString()}</td>
+              <td><button class="action-btn" style="width: auto; padding: 4px 8px; font-size: 12px;">View</button></td>
+            </tr>
+          `).join('');
+        })
+        .catch(e => console.log('Error loading orders:', e));
+    }
+
+    function loadTablesData() {
+      // Generate table grid (A-Z)
+      const tablesGrid = document.getElementById('tables-grid');
+      const tableLetters = Array.from({length: 10}, (_, i) => String.fromCharCode(65 + i));
+      
+      tablesGrid.innerHTML = tableLetters.map(letter => `
+        <div class="table-item">
+          <div class="table-number">${letter}</div>
+          <div class="table-status">Available</div>
+        </div>
+      `).join('');
+    }
+
+    function loadMenuData() {
+      fetch('/api/menu-items')
+        .then(r => r.json())
+        .then(items => {
+          const menuList = document.getElementById('menu-list');
+          if (items.length === 0) {
+            menuList.innerHTML = '<div class="empty">No menu items found</div>';
+            return;
+          }
+          menuList.innerHTML = items.map(item => `
+            <div class="card">
+              <div class="menu-item-name">${esc(item[0])}</div>
+              <div style="color: var(--muted); font-size: 12px; margin: 8px 0;">${esc(item[1])}</div>
+              <div class="menu-item-price">R ${item[3].toFixed(2)}</div>
+            </div>
+          `).join('');
+        })
+        .catch(e => console.log('Error loading menu:', e));
+    }
+
+    function loadPantryData() {
+      // Placeholder for pantry/inventory data
+      const inventoryList = document.getElementById('inventory-list');
+      inventoryList.innerHTML = `
+        <div class="inventory-item">
+          <div>
+            <div class="inventory-name">Rice</div>
+            <div class="inventory-quantity">50 kg available</div>
+          </div>
+          <span>✓</span>
+        </div>
+        <div class="inventory-item low">
+          <div>
+            <div class="inventory-name">Salmon</div>
+            <div class="inventory-quantity">5 kg available</div>
+          </div>
+          <span>⚠</span>
+        </div>
+        <div class="inventory-item">
+          <div>
+            <div class="inventory-name">Vegetables</div>
+            <div class="inventory-quantity">30 kg available</div>
+          </div>
+          <span>✓</span>
+        </div>
+      `;
+    }
+
+    // Initial section load based on current_section from template
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentSection = '{{ current_section }}';
+      const navLink = document.querySelector(`[data-section="${currentSection}"]`);
+      if (navLink) {
+        navLink.click();
+      } else {
+        document.querySelector('[data-section="complaints"]').click();
+      }
+    });
+  </script>
+</body>
+</html>

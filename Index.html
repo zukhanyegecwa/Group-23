@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en-SA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel ="icon" type ="image/png" href ="images/Bundu.png"> <!-- Favicon for the website replaced with Bundu logo S-->
+  <title>DineDesk</title>
+
+  <!--
+    Google Fonts — importing two typefaces:
+    Playfair Display: elegant serif font for headings (restaurant feel)
+    Inter: clean modern font for body text (easy to read)
+  -->
+  <link rel="stylesheet" href="Bundu.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- ================================================================
+     HOME PAGE
+     This is the first page visitors see
+     ================================================================ -->
+<div id="page-home" class="page active">
+
+  <!-- Navigation bar -->
+  <nav>
+    <!-- Logo — clicking it keeps you on home page -->
+    <div class="nav-logo" onclick="showPage('home')">🍽 DineDesk</div>
+
+    <!-- Nav links on the right -->
+    <div class="nav-links">
+      <button class="nav-btn outline" onclick="showPage('orders')">Place order</button>
+      <button class="cart-button" type="button" onclick="showPage('orders')" aria-label="Open shopping cart">
+        🛒 <span class="cart-count" id="cart-count">0</span>
+      </button>
+      <button class="nav-btn staff-btn" type="button" onclick="showPage('login')" aria-label="Staff login">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Staff
+      </button>
+      <button class="nav-btn outline" onclick="showPage('home')">Home</button>
+    </div>
+  </nav>
+
+  <!-- Hero section — the big welcome area -->
+  <section class="hero">
+    <div class="hero-content">
+
+      <!-- Small label above heading -->
+      <div class="hero-eyebrow">Now accepting online orders</div>
+
+      <!-- Main heading with a gold word -->
+      <h1>Taste the art of<br><span>authentic dining</span></h1>
+
+      <!-- Subtitle -->
+      <p class="hero-sub">
+        Fresh ingredients, bold flavours, and an experience worth remembering —
+        all at the comfort of your table.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- Features section — three cards explaining what the system offers -->
+  <section class="features">
+    <h2 class="section-title">Everything in one place</h2>
+    <p class="section-sub">Built for customers, waiters, and managers alike</p>
+
+    <div class="features-grid">
+
+      <!-- Card 1 -->
+      <div class="feature-card">
+        <span class="feature-icon">
+          <img src="images/Bundu.png" alt="Bundu Services icon">
+        </span>
+        <h3>DineDesk Services</h3>
+        <p1>Our comprehensive suite of services designed to enhance your dining experience.</p1><br>
+        <p1>Browse the menu, place your order, and track it in real time — all from your phone or the table tablet.</p1><br>
+        <P1><strong><i># its destructingly delicious</i></strong></P1>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Menu section — restaurant items displayed as online-store cards -->
+  <section class="menu-section" id="menu">
+    <div class="menu-heading">
+      <div>
+        <p class="menu-eyebrow">From our kitchen</p>
+        <h2 class="section-title">Explore our menu</h2>
+      </div>
+      <p class="menu-intro">Freshly prepared favourites, made to order and ready for your table.</p>
+    </div>
+<!--I will come back later and add real images here for each menu item-->
+    <div class="menu-grid" id="home-menu-grid"></div>
+  </section>
+
+</div><!-- end home page -->
+
+<!-- ================================================================
+     ORDER PAGE
+     Menu browsing and shopping cart
+     ================================================================ -->
+<div id="page-orders" class="page">
+  <div class="orders-page">
+    <nav>
+      <div class="nav-logo" onclick="showPage('home')">🍽 DineDesk</div>
+      <div class="nav-links">
+        <button class="nav-btn outline" onclick="showPage('home')">Home</button>
+        <button class="cart-button active-cart" type="button" onclick="showPage('orders')" aria-label="Shopping cart">
+          🛒 <span class="cart-count" id="orders-cart-count">0</span>
+        </button>
+      </div>
+    </nav>
+    <main class="orders-content">
+      <div class="orders-heading">
+        <div>
+          <p class="menu-eyebrow">DineDesk kitchen</p>
+          <h1>Place your order now</h1>
+        </div>
+        <button class="btn-secondary orders-back" type="button" onclick="showPage('home')">Back to home</button>
+      </div>
+      <div class="orders-layout">
+        <section class="order-menu-panel">
+          <h2>Our menu</h2>
+          <div class="order-menu-grid" id="order-menu-grid"></div>
+        </section>
+        <aside class="cart-panel">
+          <div class="cart-panel-heading">
+            <h2>Your cart</h2>
+            <div class="cart-panel-actions">
+              <span id="cart-item-label">0 items</span>
+              <button class="clear-cart-button" id="clear-cart-button" type="button" onclick="clearCart()">Clear cart</button>
+            </div>
+          </div>
+          <div class="cart-items" id="cart-items"></div>
+          <div class="cart-empty" id="cart-empty">Your cart is empty. Add something delicious.</div>
+          <div class="cart-summary">
+            <span>Total</span>
+            <strong id="cart-total">R0.00</strong>
+          </div>
+          <div class="order-type-field">
+            <label for="order-type">Order type</label>
+            <select id="order-type" aria-label="Choose order type">
+              <option value="Dine in">Dine in</option>
+              <option value="Takeaway">Takeaway</option>
+              <option value="Delivery">Delivery</option>
+            </select>
+            <p id="order-type-error" class="order-type-error" role="alert"></p>
+          </div>
+          <div class="order-type-field">
+            <label for="bill-plan">Bill plan</label>
+            <select id="bill-plan" aria-label="Choose bill plan">
+              <option value="pay_individual">Pay individual</option>
+              <option value="split_bill">Split bill</option>
+            </select>
+          </div>
+          <button class="form-submit checkout-submit" type="button" onclick="placeOrder(event)">Place order</button>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div><!-- end order page -->
+
+<div id="page-confirmation" class="page order-confirmation-page">
+  <main class="order-confirmation-content" aria-labelledby="confirmation-title">
+    <p class="menu-eyebrow">DineDesk kitchen</p>
+    <h1 id="confirmation-title">Order received</h1>
+    <p class="confirmation-lead">Your order has been successfully sent to the DineDesk Kitchen.</p>
+    <div class="confirmation-facts">
+      <strong id="confirmed-order-number"></strong>
+      <strong id="confirmed-order-total"></strong>
+      <span id="confirmed-order-status"></span>
+      <span id="confirmed-order-type"></span>
+      <span id="confirmed-order-bill-plan"></span>
+      <span id="confirmed-order-time"></span>
+    </div>
+    <p>The waiter has received your order and it is now being processed.</p>
+    <dialog id="confirmation-rating" class="confirmation-rating" aria-labelledby="confirmation-rating-title">
+      <h2 id="confirmation-rating-title">How was your order?</h2>
+      <form class="rating-form" onsubmit="submitOrderRating(event)">
+        <label for="order-rating">Rating</label>
+        <select id="order-rating" required>
+          <option value="">Choose a rating</option>
+          <option value="5">5 - Excellent</option>
+          <option value="4">4 - Good</option>
+          <option value="3">3 - Okay</option>
+          <option value="2">2 - Poor</option>
+          <option value="1">1 - Very poor</option>
+        </select>
+        <button class="form-submit" type="submit">Submit rating</button>
+        <p id="rating-result" role="status"></p>
+      </form>
+      <button class="btn-secondary" type="button" onclick="closeOrderRating()">Rate later</button>
+    </dialog>
+    <button id="rate-order-button" class="btn-secondary" type="button" onclick="toggleOrderRating()" hidden>Rate this order</button>
+    <button class="form-submit" type="button" onclick="placeAnotherOrder()">Place another order</button>
+    <button class="btn-secondary confirmation-complaint-button" type="button" onclick="toggleComplaintForm()">Make a complaint</button>
+    <section id="confirmation-complaint" class="confirmation-complaint" hidden aria-labelledby="confirmation-complaint-title">
+      <div class="complaint-order-summary" id="complaint-order-summary"></div>
+      <h2 id="confirmation-complaint-title">What went wrong?</h2>
+      <form class="complaint-form" onsubmit="submitComplaint(event)">
+        <div class="form-group"><label for="complaint-category">Problem</label><select id="complaint-category" required><option value="">Select a problem</option><option>Wrong order</option><option>Missing item</option><option>Food quality</option><option>Food temperature</option><option>Long waiting time</option><option>Poor service</option><option>Incorrect bill</option><option>Payment problem</option><option>Hygiene concern</option><option>Other</option></select></div>
+        <div class="form-group"><label for="complaint-severity">Priority</label><select id="complaint-severity" required><option>General feedback</option><option selected>Problem with my order</option><option>Urgent issue</option></select></div>
+        <div class="form-group"><label for="complaint-identity">Reply identity</label><select id="complaint-identity"><option value="anonymous">Anonymous</option><option value="add_email">Add email for manager feedback</option></select></div>
+        <div class="form-group" id="complaint-email-group" hidden><label for="complaint-email">Email address</label><input id="complaint-email" type="email" placeholder="you@example.com" autocomplete="email"><small>The manager can use this address to reply to your complaint.</small></div>
+        <div class="form-group"><label for="complaint-input">Description</label><textarea id="complaint-input" rows="6" minlength="10" maxlength="2000" placeholder="Please describe what went wrong..." required></textarea></div>
+        <button class="form-submit" type="submit">Submit complaint</button>
+        <p id="complaint-result" class="complaint-result" role="status"></p>
+      </form>
+    </section>
+  </main>
+</div><!-- end confirmation page -->
+
+
+<!-- ================================================================
+     REGISTER PAGE
+     New users fill in this form to create an account
+     ================================================================ -->
+<div id="page-register" class="page">
+  <div class="form-page">
+
+    <!-- Small nav on register page -->
+    <nav>
+      <div class="nav-logo" onclick="showPage('home')">🍽 DineDesk food</div>
+      <div class="nav-links">
+        <button class="nav-btn outline" onclick="showPage('home')">Home</button>
+        <button class="nav-btn outline" onclick="showPage('login')">Already have an account?</button>
+      </div>
+    </nav>
+
+    <!-- Centred form card -->
+    <div class="form-wrapper">
+      <div class="form-card">
+        <h2>Create your account</h2>
+        <p class="form-sub">Join DineDesk and start your dining experience at the comfort of your table</p>
+
+        <!-- Register form -->
+        <!-- action="#" prevents page reload, JavaScript handles submission -->
+        <form id="register-form" action="#" onsubmit="handleRegister(event)">
+
+          <!-- First name and last name side by side -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstname">First name</label>
+              <input type="text" id="firstname" name="firstname"
+                     placeholder="John" required>
+            </div>
+            <div class="form-group">
+              <label for="lastname">Last name</label>
+              <input type="text" id="lastname" name="lastname"
+                     placeholder="Doe" required>
+            </div>
+          </div>
+
+          <!-- Email input -->
+          <div class="form-group">
+            <label for="reg-email">Email address</label>
+            <input type="email" id="reg-email" name="email"
+                   placeholder="john@example.com" required>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" name="password"
+                   placeholder="Minimum 6 characters" minlength="6" required>
+          </div>
+
+          <!--
+            ROLE DROPDOWN
+            The role-wrapper contains a custom chevron icon
+            appearance:none in CSS removes the browser's default arrow
+            onchange fires JavaScript every time the user picks a role
+          -->
+          <div class="form-group">
+            <label for="role">I am a</label>
+            <div class="role-wrapper">
+              <select id="role" name="role" onchange="updateRoleBadge()"
+                      required>
+                <option value="" disabled selected>Select your role</option>
+                <option value="waiter">🍽 Waiter</option>
+                <option value="manager">📊 Manager</option>
+              </select>
+              <svg class="select-chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </div>
+            <!--
+              Role badge — appears below the dropdown after a role is selected
+              starts hidden, JavaScript shows it and applies the right colour
+            -->
+            <div id="role-badge" class="role-badge-container"></div>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="form-submit">Create Account</button>
+
+        </form>
+
+        <!-- Link to login page -->
+        <p class="form-footer">
+          Already have an account?
+          <span onclick="showPage('login')">Sign in</span>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div><!-- end register page -->
+
+
+<!-- ================================================================
+     LOGIN PAGE
+     Existing users enter their email and password here
+     ================================================================ -->
+<div id="page-login" class="page">
+  <div class="form-page">
+
+    <nav>
+      <div class="nav-logo" onclick="showPage('home')">🍽 DineDesk</div>
+      <div class="nav-links">
+        <button class="nav-btn outline" onclick="showPage('home')">Home</button>
+        <button class="nav-btn solid" onclick="showPage('register')">Register</button>
+      </div>
+    </nav>
+
+    <div class="form-wrapper">
+      <div class="form-card">
+        <h2>Welcome back</h2>
+        <p class="form-sub">Sign in to continue to DineDesk Restaurant experience</p>
+
+        <form id="login-form" action="#" onsubmit="handleLogin(event)">
+
+          <div class="form-group">
+            <label for="login-email">Email address</label>
+            <input type="email" id="login-email" name="email"
+                   placeholder="john@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" name="password"
+                   placeholder="Enter your password" required>
+          </div>
+
+          <button type="submit" class="form-submit">Sign In</button>
+
+        </form>
+
+        <p class="form-footer">
+          Don't have an account?
+          <span onclick="showPage('register')">Register here</span>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div><!-- end login page -->
+
+<div id="page-waiter-dashboard" class="page chat-page">
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <div class="chat-avatar">🍽</div>
+      <div><h4>Waiter dashboard</h4><p id="waiter-welcome">Manage table service</p></div>
+    </div>
+    <button class="logout-btn" type="button" onclick="handleLogout()">Sign out</button>
+  </div>
+  <main class="staff-orders" id="waiter-orders"></main>
+</div>
+
+<div id="page-manager-dashboard" class="page chat-page">
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <div class="chat-avatar">📊</div>
+      <div><h4>Manager dashboard</h4><p id="manager-welcome">Manage restaurant operations</p></div>
+    </div>
+    <button class="logout-btn" type="button" onclick="handleLogout()">Sign out</button>
+  </div>
+  <main class="manager-dashboard">
+    <div class="manager-dashboard-heading">
+      <div>
+        <p class="menu-eyebrow">Management</p>
+        <h1>Restaurant operations</h1>
+        <p>Monitor orders, menu performance, and customer care from one workspace.</p>
+      </div>
+      <button class="btn-secondary" type="button" onclick="loadManagerDashboard()">Refresh dashboard</button>
+    </div>
+    <nav class="manager-tabs" aria-label="Manager sections">
+      <button class="manager-tab active" type="button" data-manager-section="manager-overview">Overview</button>
+      <button class="manager-tab" type="button" data-manager-section="manager-menu-section">Menu</button>
+      <button class="manager-tab" type="button" data-manager-section="manager-promotions-section">Promotions</button>
+      <button class="manager-tab" type="button" data-manager-section="manager-complaints-section">Complaints <span id="manager-complaints-count" class="manager-tab-count">0</span></button>
+      <button class="manager-tab" type="button" data-manager-section="manager-shifts-section">Shifts</button>
+    </nav>
+    <section id="manager-overview" class="manager-section-panel">
+      <section class="manager-stat-grid" id="manager-stats" aria-label="Restaurant statistics"></section>
+      <div class="manager-dashboard-grid">
+        <section class="manager-panel manager-panel-wide">
+          <div class="manager-panel-heading"><h2>Live order activity</h2><span id="manager-orders-status"></span></div>
+          <div id="manager-orders" class="manager-list"></div>
+        </section>
+        <section class="manager-panel"><div class="manager-panel-heading"><h2>Daily menu performance</h2><span class="manager-panel-note">Today</span></div><div id="manager-menu" class="manager-list"></div></section>
+        <section class="manager-panel"><div class="manager-panel-heading"><h2>Customer complaints</h2></div><div id="manager-complaints" class="manager-list"></div></section>
+      </div>
+    </section>
+    <section id="manager-menu-section" class="manager-section-panel hidden">
+      <section class="manager-panel">
+        <div class="manager-panel-heading"><h2>Menu management</h2></div>
+        <form id="manager-menu-form" class="manager-form" enctype="multipart/form-data">
+          <input id="manager-menu-name" name="name" placeholder="Dish name" required>
+          <input id="manager-menu-category" name="category" placeholder="Category" required>
+          <input id="manager-menu-price" name="price" type="number" min="0" step="0.01" placeholder="Price" required>
+          <input id="manager-menu-image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Choose menu photo from gallery">
+          <input id="manager-menu-description" name="description" placeholder="Short description" required>
+          <button class="form-submit" type="submit">Add menu item</button>
+          <p id="manager-menu-result" class="manager-form-result" role="status" aria-live="polite"></p>
+        </form>
+        <div id="manager-menu-management" class="manager-list"></div>
+      </section>
+    </section>
+    <section id="manager-promotions-section" class="manager-section-panel hidden">
+      <section class="manager-panel">
+        <div class="manager-panel-heading"><h2>Promotions and pricing</h2></div>
+        <form id="manager-promotion-form" class="manager-form">
+          <select id="manager-promotion-item" required></select>
+          <input id="manager-promotion-discount" type="number" min="1" max="100" placeholder="Discount %" required>
+          <input id="manager-promotion-start" type="datetime-local" required>
+          <input id="manager-promotion-end" type="datetime-local" required>
+          <button class="form-submit" type="submit">Create promotion</button>
+        </form>
+        <div id="manager-promotions" class="manager-list"></div>
+      </section>
+    </section>
+    <section id="manager-complaints-section" class="manager-section-panel hidden">
+      <section class="manager-panel"><div class="manager-panel-heading"><h2>Complaint queue</h2></div><div id="manager-complaints-management" class="manager-list"></div></section>
+    </section>
+    <section id="manager-shifts-section" class="manager-section-panel hidden">
+      <section class="manager-panel">
+        <div class="manager-panel-heading"><h2>Shift management</h2></div>
+        <form id="manager-shift-form" class="manager-form">
+          <input id="manager-shift-name" placeholder="Staff member" required>
+          <input id="manager-shift-role" placeholder="Role" value="Waiter" required>
+          <input id="manager-shift-label" placeholder="Shift e.g. Dinner service" required>
+          <select id="manager-shift-status"><option>Scheduled</option><option>On duty</option><option>Off</option></select>
+          <button class="form-submit" type="submit">Add shift</button>
+        </form>
+        <div id="manager-shifts" class="manager-list"></div>
+      </section>
+    </section>
+  </main>
+</div>
+
+
+<!-- ================================================================
+     CHAT PAGE
+     The chatbot interface shown after logging in
+     ================================================================ -->
+<div id="page-chat" class="page chat-page">
+
+  <!-- Chat header bar -->
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <div class="chat-avatar">🤖</div>
+      <div>
+        <h4>Bundu Assistant</h4>
+        <p>● Online — ready to help</p>
+      </div>
+    </div>
+    <!-- Logout returns user to home page -->
+    <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+  </div>
+
+  <!-- Chat window -->
+  <div class="chat-window">
+
+    <!-- Scrollable message area — messages appear here -->
+    <div class="chat-messages" id="chat-messages"></div>
+
+    <!-- Quick question suggestions -->
+    <div class="suggestions" id="suggestions">
+      <div class="chip" onclick="sendChip(this)">🍜 What are your top dishes?</div>
+      <div class="chip" onclick="sendChip(this)">💰 What is the average price?</div>
+      <div class="chip" onclick="sendChip(this)">⭐ What do customers say?</div>
+      <div class="chip" onclick="sendChip(this)">🕐 What are your busiest days?</div>
+      <div class="chip" onclick="sendChip(this)">🚗 Do you offer delivery?</div>
+    </div>
+
+    <!-- Input bar at the bottom -->
+    <div class="chat-input-area">
+      <input
+        type="text"
+        class="chat-input"
+        id="chat-input"
+        placeholder="Ask me anything about Bundu Restaurant..."
+        onkeydown="if(event.key==='Enter') sendMessage()"
+      >
+      <!-- Send button with arrow icon -->
+      <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+
+  </div>
+</div><!-- end chat page -->
+
+
+<!-- Toast notification element — hidden until JavaScript shows it -->
+<div class="toast" id="toast"></div>
+
+<!-- ================================================================
+     JAVASCRIPT
+     Handles all the interactivity on the page
+     ================================================================ -->
+<script>
+  let currentUser = null;
+  let inactivityTimer = null;
+  const INACTIVITY_LIMIT_MS = 10 * 60 * 1000;
+  const ATTENDED_COMPLAINTS_KEY = 'bundu_attended_complaints';
+
+  // ================================================================
+  // NAVIGATION — showPage controls which page is visible
+  // It hides all pages then shows only the requested one
+  // ================================================================
+  function showPage(name) {
+    // Get all elements with class "page"
+    document.querySelectorAll('.page').forEach(p => {
+      p.classList.remove('active'); // hide every page
+    });
+
+    // Show only the requested page by adding "active" class
+    const target = document.getElementById('page-' + name);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo(0, 0); // scroll to top when changing pages
+      if (name === 'home' || name === 'orders') loadMenuItems();
+      if (name === 'orders') renderOrderPage();
+      if (name === 'waiter-dashboard') loadWaiterOrders();
+      if (name === 'manager-dashboard') loadManagerDashboard();
+      if (name === 'confirmation') startOrderTracking();
+      else stopOrderTracking();
+    }
+  }
+
+  const API_BASE = 'http://127.0.0.1:5000/api';
+  const AUTH_TOKEN_KEY = 'bundu_auth_token';
+
+  function authHeaders(headers = {}) {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    return token ? { ...headers, Authorization: `Bearer ${token}` } : headers;
+  }
+
+  let latestOrder = null;
+  let orderTrackingTimer = null;
+  let ratingPromptShownForOrder = null;
+
+  async function restoreOrderConfirmation() {
+    const orderId = new URLSearchParams(window.location.search).get('order');
+    if (!orderId) return;
+    try {
+      const response = await fetch(`${API_BASE}/orders/${encodeURIComponent(orderId)}`);
+      if (!response.ok) return;
+      latestOrder = await response.json();
+      renderOrderConfirmation();
+      showPage('confirmation');
+    } catch (error) {
+      showToast('Could not load the order confirmation.');
+    }
+  }
+
+  function renderOrderConfirmation() {
+    if (!latestOrder) return;
+    document.getElementById('confirmed-order-number').textContent = `Order #${latestOrder.order_number}`;
+    document.getElementById('confirmed-order-total').textContent = `Total: R${Number(latestOrder.total).toFixed(2)}`;
+    document.getElementById('confirmed-order-status').textContent = `Status: ${latestOrder.status}`;
+    document.getElementById('confirmed-order-type').textContent = latestOrder.order_type === 'Dine in'
+      ? (latestOrder.table_number ? `Table: ${latestOrder.table_number}` : 'Table: Waiting for waiter assignment')
+      : `Order type: ${latestOrder.order_type}`;
+    document.getElementById('confirmed-order-bill-plan').textContent = `Bill plan: ${latestOrder.bill_plan === 'split_bill' ? 'Split bill' : 'Pay individual'}`;
+    document.getElementById('confirmed-order-time').textContent = `Placed: ${formatOrderDateTime(latestOrder.created_at)}`;
+    const ratingSection = document.getElementById('confirmation-rating');
+    const ratingButton = document.getElementById('rate-order-button');
+    const ratingResult = document.getElementById('rating-result');
+    const canRate = latestOrder.status === 'Completed' && latestOrder.rating == null;
+    ratingButton.hidden = !canRate;
+    if (latestOrder.rating != null) {
+      ratingSection.close();
+      ratingResult.textContent = `Thank you for rating this order ${latestOrder.rating} out of 5.`;
+    } else if (!canRate) {
+      ratingSection.close();
+      ratingResult.textContent = '';
+    } else if (ratingPromptShownForOrder !== latestOrder.id) {
+      ratingPromptShownForOrder = latestOrder.id;
+      ratingSection.showModal();
+    }
+    renderComplaintOrder();
+  }
+
+  function toggleOrderRating() {
+    const section = document.getElementById('confirmation-rating');
+    if (!section.open) section.showModal();
+    document.getElementById('order-rating').focus();
+  }
+
+  function closeOrderRating() {
+    document.getElementById('confirmation-rating').close();
+  }
+
+  async function submitOrderRating(event) {
+    event.preventDefault();
+    if (!latestOrder || latestOrder.status !== 'Completed') return;
+    const result = document.getElementById('rating-result');
+    try {
+      const response = await fetch(`${API_BASE}/orders/${encodeURIComponent(latestOrder.id)}/rating`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating: Number(document.getElementById('order-rating').value) })
+      });
+      const order = await response.json();
+      if (!response.ok) throw new Error(order.error || 'Could not submit your rating.');
+      latestOrder = order;
+      renderOrderConfirmation();
+      showToast('Thank you for rating your order');
+    } catch (error) {
+      result.textContent = error.message;
+    }
+  }
+
+  function formatOrderDateTime(value) {
+    if (!value) return 'Date and time unavailable';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? 'Date and time unavailable' : date.toLocaleString('en-ZA', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    });
+  }
+
+  function isToday(value) {
+    if (!value) return false;
+    const date = new Date(value);
+    const today = new Date();
+    return !Number.isNaN(date.getTime()) && date.toDateString() === today.toDateString();
+  }
+
+  function startOrderTracking() {
+    stopOrderTracking();
+    if (!latestOrder) return;
+    refreshOrderStatus();
+    orderTrackingTimer = setInterval(refreshOrderStatus, 5000);
+  }
+
+  function stopOrderTracking() {
+    if (orderTrackingTimer) {
+      clearInterval(orderTrackingTimer);
+      orderTrackingTimer = null;
+    }
+  }
+
+  async function refreshOrderStatus() {
+    if (!latestOrder) return;
+    try {
+      const response = await fetch(`${API_BASE}/orders/${encodeURIComponent(latestOrder.id)}`);
+      if (!response.ok) return;
+      latestOrder = await response.json();
+      renderOrderConfirmation();
+    } catch (error) {
+      // Keep the last known order state visible if the service is briefly unavailable.
+    }
+  }
+  function renderComplaintOrder() {
+    const summary = document.getElementById('complaint-order-summary');
+    if (!summary || !latestOrder) return;
+    summary.innerHTML = `<strong>Order #${latestOrder.order_number}</strong><span>${latestOrder.items.map((item) => `${item.quantity} x ${item.name}`).join(', ')}</span>`;
+  }
+
+  function toggleComplaintForm() {
+    const complaintSection = document.getElementById('confirmation-complaint');
+    const complaintButton = document.querySelector('.confirmation-complaint-button');
+    complaintSection.hidden = !complaintSection.hidden;
+    complaintButton.textContent = complaintSection.hidden ? 'Make a complaint' : 'Hide complaint form';
+    if (!complaintSection.hidden) {
+      renderComplaintOrder();
+      document.getElementById('complaint-category').focus();
+    }
+  }
+
+  async function submitComplaint(event) {
+    event.preventDefault();
+    const category = document.getElementById('complaint-category').value;
+    const severity = document.getElementById('complaint-severity').value;
+    const identityMode = document.getElementById('complaint-identity').value || 'anonymous';
+    const customerEmail = identityMode === 'add_email' ? document.getElementById('complaint-email').value.trim() : '';
+    const description = document.getElementById('complaint-input').value.trim();
+    const result = document.getElementById('complaint-result');
+    if (!latestOrder) { result.textContent = 'A completed order is required before reporting a problem.'; return; }
+
+    try {
+      const response = await fetch(`${API_BASE}/complaints`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: latestOrder.id, category, severity, description, identity_mode: identityMode, customer_email: customerEmail })
+      });
+      const complaint = await response.json();
+      if (!response.ok) throw new Error(complaint.error || 'Could not submit complaint.');
+      document.getElementById('complaint-input').value = '';
+      document.getElementById('complaint-email').value = '';
+      document.getElementById('complaint-identity').value = 'anonymous';
+      document.getElementById('complaint-email-group').hidden = true;
+      result.textContent = `Complaint submitted. Reference: ${complaint.reference}`;
+      showToast(`Complaint ${complaint.reference} submitted`);
+    } catch (error) {
+      result.textContent = error.message;
+    }
+  }
+
+  document.getElementById('complaint-identity').addEventListener('change', (event) => {
+    const emailGroup = document.getElementById('complaint-email-group');
+    emailGroup.hidden = event.target.value !== 'add_email';
+    if (event.target.value !== 'add_email') document.getElementById('complaint-email').value = '';
+  });
+
+  // ================================================================
+  // ORDERING — menu items and shopping cart
+  // ================================================================
+  let menuItems = [];
+  let activePromotions = [];
+
+  function applyPromotionToMenuItem(item) {
+    const promotion = activePromotions.find((entry) => entry.menu_name === item.name);
+    const discountPercent = promotion ? Number(promotion.discount_percent) : 0;
+    return {
+      ...item,
+      discountPercent,
+      currentPrice: discountPercent ? Math.round(Number(item.price) * (100 - discountPercent)) / 100 : Number(item.price)
+    };
+  }
+
+  function addMenuItemToCustomerMenus(item) {
+    menuItems = menuItems.filter((existing) => existing.id !== item.id && existing.name !== item.name);
+    menuItems.push(applyPromotionToMenuItem(item));
+    menuItems.sort((first, second) => first.id - second.id);
+    renderHomeMenu();
+    renderOrderMenu();
+  }
+
+  async function loadMenuItems() {
+    try {
+      const [menuResponse, promotionsResponse] = await Promise.all([
+        fetch(`${API_BASE}/menu-items`),
+        fetch(`${API_BASE}/promotions/active`)
+      ]);
+      if (!menuResponse.ok || !promotionsResponse.ok) throw new Error();
+      const [items, promotions] = await Promise.all([menuResponse.json(), promotionsResponse.json()]);
+      activePromotions = promotions;
+      menuItems = items.map(applyPromotionToMenuItem);
+      cart = cart.map((cartItem) => {
+        const menuItem = menuItems.find((item) => item.name === cartItem.name);
+        return menuItem ? { ...cartItem, price: menuItem.currentPrice } : cartItem;
+      });
+      saveCart();
+      renderHomeMenu();
+      renderOrderMenu();
+      renderCart();
+    } catch (error) {
+      showToast('Could not load the menu. Start the Python backend first.');
+    }
+  }
+
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'bundu_menu_items_updated') loadMenuItems();
+  });
+
+  let cart = JSON.parse(localStorage.getItem('bundu_cart') || '[]');
+
+  const MENU_IMAGES = {
+    roll: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=900&q=85',
+    nigiri: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=900&q=85',
+    sashimi: 'https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=900&q=85',
+    omakase: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=900&q=85',
+    side: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=85',
+    drink: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=85',
+    dessert: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=85'
+  };
+
+  function getMenuImage(item) {
+    const category = item.category.toLowerCase();
+    const uploadedImage = item.image?.startsWith('/uploads/') ? `${API_BASE.replace(/\/api$/, '')}${item.image}` : item.image;
+    const image = uploadedImage || MENU_IMAGES[category] || MENU_IMAGES.side;
+    return `<img src="${image}" alt="${item.name}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.hidden=false;">
+            <span class="menu-image-fallback" hidden aria-hidden="true">${item.icon}</span>`;
+  }
+
+  function renderMenuPrice(item, className) {
+    if (item.discountPercent) {
+      return `<span class="${className} promo-price"><del>R${Number(item.price).toFixed(2)}</del> R${item.currentPrice.toFixed(2)} <small>${item.discountPercent}% off</small></span>`;
+    }
+    return `<span class="${className}">R${Number(item.price).toFixed(2)}</span>`;
+  }
+
+  function saveCart() {
+    localStorage.setItem('bundu_cart', JSON.stringify(cart));
+    updateCartCounts();
+  }
+
+  function updateCartCounts() {
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.querySelectorAll('.cart-count').forEach((badge) => {
+      badge.textContent = count;
+    });
+  }
+
+  function addToCart(button) {
+    const name = button.dataset.name;
+    const price = Number(button.dataset.price);
+    const icon = button.dataset.icon;
+    const existing = cart.find((item) => item.name === name);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ name, price, icon, quantity: 1 });
+    }
+
+    saveCart();
+    renderCart();
+    showToast(`${name} added to your cart`);
+  }
+
+  function changeQuantity(name, amount) {
+    const item = cart.find((cartItem) => cartItem.name === name);
+    if (!item) return;
+
+    item.quantity += amount;
+    if (item.quantity <= 0) {
+      cart = cart.filter((cartItem) => cartItem.name !== name);
+    }
+
+    saveCart();
+    renderCart();
+  }
+
+  function clearCart() {
+    if (!cart.length) return;
+    cart = [];
+    saveCart();
+    renderCart();
+    showToast('Cart cleared. You can start a new order.');
+  }
+
+  function renderHomeMenu() {
+    const menu = document.getElementById('home-menu-grid');
+    if (!menu) return;
+
+    menu.innerHTML = menuItems.map((item) => `
+      <article class="menu-card">
+        <div class="menu-card-image">${getMenuImage(item)}</div>
+        <div class="menu-card-body">
+          <p class="menu-category">${item.category}</p>
+          <h3>${item.name}</h3>
+          <p class="menu-description">${item.description}</p>
+          <div class="menu-card-footer">
+            ${renderMenuPrice(item, 'menu-price')}
+            <button class="menu-order" type="button" onclick="addToCartByName('${item.name}')">Add to order</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function renderOrderMenu() {
+    const menu = document.getElementById('order-menu-grid');
+    if (!menu) return;
+
+    menu.innerHTML = menuItems.map((item) => `
+      <article class="order-menu-item">
+        <div class="order-menu-icon">${getMenuImage(item)}</div>
+        <div>
+          <h3>${item.name}</h3>
+          <div class="order-menu-item-footer">
+            ${renderMenuPrice(item, 'order-menu-item-price')}
+            <button class="menu-order" type="button" onclick="addToCartByName('${item.name}')">Add</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function addToCartByName(name) {
+    const item = menuItems.find((menuItem) => menuItem.name === name);
+    if (!item) return;
+    addToCart({ dataset: { ...item, price: item.currentPrice } });
+  }
+
+  function renderCart() {
+    const container = document.getElementById('cart-items');
+    const empty = document.getElementById('cart-empty');
+    const totalElement = document.getElementById('cart-total');
+    const itemLabel = document.getElementById('cart-item-label');
+    const clearButton = document.getElementById('clear-cart-button');
+    if (!container || !empty || !totalElement || !itemLabel || !clearButton) return;
+
+    const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    itemLabel.textContent = `${itemCount} item${itemCount === 1 ? '' : 's'}`;
+    totalElement.textContent = `R${total.toFixed(2)}`;
+    empty.hidden = cart.length > 0;
+    clearButton.disabled = cart.length === 0;
+
+    container.innerHTML = cart.map((item) => `
+      <div class="cart-item">
+        <span class="cart-item-icon" aria-hidden="true">${item.icon}</span>
+        <div>
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">${(() => { const menuItem = menuItems.find((entry) => entry.name === item.name); return menuItem?.discountPercent ? `<del>R${Number(menuItem.price).toFixed(2)}</del> R${item.price.toFixed(2)} each · ${menuItem.discountPercent}% off` : `R${item.price.toFixed(2)} each`; })()}</div>
+          <div class="cart-quantity">
+            <button class="quantity-button" type="button" onclick="changeQuantity('${item.name}', -1)" aria-label="Remove one ${item.name}">-</button>
+            <span>${item.quantity}</span>
+            <button class="quantity-button" type="button" onclick="changeQuantity('${item.name}', 1)" aria-label="Add one ${item.name}">+</button>
+          </div>
+        </div>
+        <span class="cart-item-total">R${(item.price * item.quantity).toFixed(2)}</span>
+      </div>
+    `).join('');
+  }
+
+  function renderOrderPage() {
+    renderOrderMenu();
+    renderCart();
+    updateCartCounts();
+  }
+
+  async function placeOrder(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    if (!cart.length) { showToast('Add an item to your cart first'); return; }
+    const orderType = document.getElementById('order-type').value;
+    const billPlan = document.getElementById('bill-plan')?.value || 'pay_individual';
+    const orderTypeError = document.getElementById('order-type-error');
+    orderTypeError.textContent = '';
+    if (orderType === 'Delivery') {
+      orderTypeError.textContent = "We currently don't offer delivery";
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE}/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, order_type: orderType, bill_plan: billPlan }) });
+      const order = await response.json();
+      if (!response.ok) throw new Error(order.error || 'Could not place order');
+      latestOrder = order;
+      renderOrderConfirmation();
+      cart = []; saveCart(); renderCart();
+      history.pushState({}, '', `?order=${encodeURIComponent(order.id)}`);
+      showPage('confirmation');
+    } catch (error) { showToast(error.message); }
+  }
+
+  function placeAnotherOrder() {
+    stopOrderTracking();
+    latestOrder = null;
+    history.pushState({}, '', window.location.pathname);
+    showPage('orders');
+  }
+
+  // ================================================================
+  // ROLE BADGE — updates the coloured badge when user picks a role
+  // ================================================================
+  function updateRoleBadge() {
+    const select = document.getElementById('role');    // the dropdown
+    const badge  = document.getElementById('role-badge'); // the badge div
+    const role   = select.value;                       // selected value
+
+    if (!role) return; // do nothing if nothing selected
+
+    // Text to show for each role
+    const labels = {
+      waiter:   '🍽 You will manage table orders and customer requests',
+      manager:  '📊 You will access the full analytics dashboard'
+    };
+
+    // Show the badge with the right colour class and description
+    badge.style.display = 'block';
+    badge.innerHTML = `<span class="role-badge ${role}">${role.charAt(0).toUpperCase() + role.slice(1)}</span>
+                       <span class="role-description">${labels[role]}</span>`;
+  }
+
+  // ================================================================
+  // REGISTER FORM — handles form submission
+  // Sends the registration details to the backend, which validates the role
+  // and enforces the two-manager limit before saving the account.
+  // ================================================================
+  async function handleRegister(event) {
+    event.preventDefault(); // stops the page from reloading
+
+    const firstname = document.getElementById('firstname').value;
+    const lastname  = document.getElementById('lastname').value;
+    const email     = document.getElementById('reg-email').value;
+    const password  = document.getElementById('reg-password').value;
+    const role      = document.getElementById('role').value;
+
+    // Basic validation — role must be selected
+    if (!role) {
+      showToast('Please select your role to continue');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstname, lastname, email, password, role })
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Registration failed');
+      showToast('Account created! Please sign in.');
+      setTimeout(() => showPage('login'), 1000);
+    } catch (error) {
+      showToast(error.message || 'Could not connect to the authentication service.');
+    }
+  }
+
+  // ================================================================
+  // LOGIN FORM — handles login submission
+  // Checks stored user against entered credentials
+  // ================================================================
+  async function handleLogin(event) {
+    event.preventDefault();
+
+    const email    = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Incorrect email or password');
+      localStorage.setItem(AUTH_TOKEN_KEY, result.token);
+      currentUser = result.user;
+      showToast(`Welcome back, ${result.user.firstname}!`);
+      setTimeout(() => routeByRole(result.user), 500);
+    } catch (error) {
+      showToast(error.message || 'Could not connect to the authentication service.');
+    }
+  }
+
+  function routeByRole(user) {
+    if (user.role === 'waiter') {
+      document.getElementById('waiter-welcome').textContent = `Welcome, ${user.firstname}`;
+      showPage('waiter-dashboard');
+    } else if (user.role === 'manager') {
+      document.getElementById('manager-welcome').textContent = `Welcome, ${user.firstname}`;
+      showPage('manager-dashboard');
+      loadManagerDashboard();
+    }
+  }
+
+  async function loadManagerDashboard() {
+    const stats = document.getElementById('manager-stats');
+    const ordersList = document.getElementById('manager-orders');
+    const menuList = document.getElementById('manager-menu');
+    const complaintsList = document.getElementById('manager-complaints');
+    if (!stats || !ordersList || !menuList || !complaintsList) return;
+
+    stats.innerHTML = '<p class="manager-loading">Loading live restaurant data...</p>';
+    try {
+      const [ordersResponse, menuResponse, complaintsResponse] = await Promise.all([
+        fetch(`${API_BASE}/orders`, { headers: authHeaders() }),
+        fetch(`${API_BASE}/menu-items`),
+        fetch(`${API_BASE}/complaints`, { headers: authHeaders() })
+      ]);
+      const orders = await ordersResponse.json();
+      const menu = await menuResponse.json();
+      const complaints = complaintsResponse.ok ? await complaintsResponse.json() : [];
+      window.managerComplaints = complaints;
+      if (!ordersResponse.ok || !menuResponse.ok) throw new Error('Could not load manager data.');
+
+      const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+      const activeOrders = orders.filter((order) => !['Completed', 'Cancelled'].includes(order.status));
+      const openComplaints = complaints.filter((complaint) => complaint.status !== 'Resolved');
+      const completedOrders = orders.filter((order) => order.status === 'Completed');
+      const cancelledOrders = orders.filter((order) => order.status === 'Cancelled');
+      stats.innerHTML = [
+        ['Revenue', `R${revenue.toFixed(2)}`],
+        ['Orders', orders.length],
+        ['Active orders', activeOrders.length],
+        ['Open complaints', openComplaints.length],
+        ['Completed', completedOrders.length],
+        ['Cancelled', cancelledOrders.length]
+      ].map(([label, value]) => `<div class="manager-stat"><span>${label}</span><strong>${value}</strong></div>`).join('');
+
+      ordersList.innerHTML = orders.length ? orders.map((order) => `
+        <article class="manager-list-item">
+          <div><strong>${order.order_number || `Order #${order.id}`}</strong><span>${order.order_type} · ${order.status} · ${order.rating == null ? 'Not rated' : `Customer rating: ${order.rating}/5`}</span><small>Placed: ${formatOrderDateTime(order.created_at)}${order.updated_at && order.updated_at !== order.created_at ? ` · Updated: ${formatOrderDateTime(order.updated_at)}` : ''}</small></div>
+          <strong>R${Number(order.total || 0).toFixed(2)}</strong>
+        </article>
+      `).join('') : '<p class="manager-empty">No orders recorded yet.</p>';
+
+      const dailyItems = {};
+      orders
+        .filter((order) => order.status !== 'Cancelled' && isToday(order.created_at))
+        .forEach((order) => (order.items || []).forEach((item) => {
+          const quantity = Number(item.quantity || 0);
+          const price = Number(item.price || 0);
+          if (!item.name || quantity <= 0) return;
+          if (!dailyItems[item.name]) dailyItems[item.name] = { quantity: 0, revenue: 0 };
+          dailyItems[item.name].quantity += quantity;
+          dailyItems[item.name].revenue += quantity * price;
+        }));
+      const dailyRanking = Object.entries(dailyItems).sort(([, first], [, second]) => second.quantity - first.quantity || second.revenue - first.revenue);
+      menuList.innerHTML = dailyRanking.length ? dailyRanking.map(([name, performance], index) => `
+        <article class="manager-list-item"><div><strong>${index + 1}. ${name}</strong><span>${performance.quantity} item${performance.quantity === 1 ? '' : 's'} sold today</span></div><strong>R${performance.revenue.toFixed(2)}</strong></article>
+      `).join('') : '<p class="manager-empty">No items have been bought today.</p>';
+
+      complaintsList.innerHTML = complaints.length ? complaints.slice(0, 8).map((complaint) => `
+        <article class="manager-list-item manager-complaint-item"><div><strong>${complaint.reference || `Complaint #${complaint.id}`}</strong><span>${complaint.category || 'General feedback'} · ${complaint.status}</span><small>Received: ${formatOrderDateTime(complaint.created_at)} · ${complaint.identity_mode === 'add_email' ? `Reply email: ${complaint.customer_email}` : 'Anonymous complaint'}</small></div><p>${complaint.description || complaint.message}</p></article>
+      `).join('') : '<p class="manager-empty">No complaints recorded yet.</p>';
+      updateComplaintBadge(complaints);
+      renderManagerMenu(menu);
+      renderManagerComplaints(complaints);
+      loadManagerPromotions();
+      loadManagerShifts();
+    } catch (error) {
+      stats.innerHTML = `<p class="manager-error">${error.message || 'Could not load manager data.'}</p>`;
+      ordersList.innerHTML = menuList.innerHTML = complaintsList.innerHTML = '';
+    }
+  }
+
+  function renderManagerMenu(menu) {
+    const list = document.getElementById('manager-menu-management');
+    const select = document.getElementById('manager-promotion-item');
+    if (!list || !select) return;
+    select.innerHTML = menu.map((item) => `<option value="${item.id}">${item.name}</option>`).join('');
+    list.innerHTML = menu.map((item) => `<article class="manager-list-item"><div><strong>${item.name}</strong><span>${item.category} · R${Number(item.price).toFixed(2)}</span></div><button class="manager-action danger" type="button" data-delete-menu="${item.id}">Delete</button></article>`).join('');
+  }
+
+  function renderManagerComplaints(complaints) {
+    const list = document.getElementById('manager-complaints-management');
+    if (!list) return;
+    list.innerHTML = complaints.length ? complaints.map((complaint) => `<article class="manager-complaint-card"><div><strong>${complaint.reference || `Complaint #${complaint.id}`}</strong><span>${complaint.category || 'General feedback'} · ${complaint.severity || ''}</span><small>Received: ${formatOrderDateTime(complaint.created_at)} · ${complaint.identity_mode === 'add_email' ? `Reply email: ${complaint.customer_email}` : 'Anonymous complaint'}</small><p>${complaint.description || complaint.message}</p></div><select class="manager-complaint-status" data-complaint-id="${complaint.id}">${['Open', 'Under Review', 'Waiting for Customer', 'Resolved'].map((status) => `<option ${status === complaint.status ? 'selected' : ''}>${status}</option>`).join('')}</select><textarea class="manager-complaint-response" data-complaint-response="${complaint.id}" placeholder="Manager response">${complaint.manager_response || ''}</textarea><button class="manager-action" type="button" data-send-complaint="${complaint.id}">Save response</button>${complaint.identity_mode === 'add_email' && complaint.customer_email ? `<a class="manager-action" href="mailto:${complaint.customer_email}?subject=${encodeURIComponent(`Response to ${complaint.reference || 'your Bundu complaint'}`)}&body=${encodeURIComponent(complaint.manager_response || '')}">Email customer</a>` : ''}</article>`).join('') : '<p class="manager-empty">No complaints recorded yet.</p>';
+  }
+
+  function getAttendedComplaintIds() {
+    try {
+      return JSON.parse(localStorage.getItem(ATTENDED_COMPLAINTS_KEY) || '[]').map(Number);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function updateComplaintBadge(complaints) {
+    const badge = document.getElementById('manager-complaints-count');
+    if (!badge) return;
+    const attended = getAttendedComplaintIds();
+    const newCount = complaints.filter((complaint) => complaint.status !== 'Resolved' && !attended.includes(Number(complaint.id))).length;
+    badge.textContent = newCount;
+    badge.classList.toggle('has-new', newCount > 0);
+  }
+
+  function markComplaintsAttended() {
+    const complaints = window.managerComplaints || [];
+    const attended = new Set(getAttendedComplaintIds());
+    complaints.forEach((complaint) => attended.add(Number(complaint.id)));
+    localStorage.setItem(ATTENDED_COMPLAINTS_KEY, JSON.stringify([...attended]));
+    updateComplaintBadge(complaints);
+  }
+
+  async function loadManagerPromotions() {
+    const list = document.getElementById('manager-promotions');
+    if (!list) return;
+    const response = await fetch(`${API_BASE}/promotions`, { headers: authHeaders() });
+    const promotions = response.ok ? await response.json() : [];
+    list.innerHTML = promotions.length ? promotions.map((promotion) => `<article class="manager-list-item"><div><strong>${promotion.menu_name}</strong><span>${promotion.discount_percent}% · ${promotion.start_at} to ${promotion.end_at}</span></div></article>`).join('') : '<p class="manager-empty">No promotions created yet.</p>';
+  }
+
+  async function loadManagerShifts() {
+    const list = document.getElementById('manager-shifts');
+    if (!list) return;
+    const response = await fetch(`${API_BASE}/shifts`, { headers: authHeaders() });
+    const shifts = response.ok ? await response.json() : [];
+    list.innerHTML = shifts.length ? shifts.map((shift) => `<article class="manager-list-item"><div><strong>${shift.staff_name}</strong><span>${shift.role} · ${shift.shift_label}</span></div><strong>${shift.status}</strong></article>`).join('') : '<p class="manager-empty">No shifts created yet.</p>';
+  }
+
+  function resetInactivityTimer() {
+    if (!localStorage.getItem(AUTH_TOKEN_KEY)) return;
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => handleLogout(true), INACTIVITY_LIMIT_MS);
+  }
+
+  function startInactivityTracking() {
+    ['click', 'keydown', 'mousemove', 'touchstart'].forEach((eventName) => document.addEventListener(eventName, resetInactivityTimer, { passive: true }));
+    resetInactivityTimer();
+  }
+
+  async function loadWaiterOrders() {
+    const container = document.getElementById('waiter-orders');
+    if (!container) return;
+    try {
+      const [ordersResponse, tablesResponse] = await Promise.all([fetch(`${API_BASE}/orders?active=true`), fetch(`${API_BASE}/tables/available`)]);
+      const orders = await ordersResponse.json();
+      const tables = await tablesResponse.json();
+      container.innerHTML = orders.length ? orders.map((order) => `<article class="staff-order"><div><p class="menu-eyebrow">${order.order_type}</p><h2>${order.order_number}</h2><p>${order.items.map((item) => `${item.quantity} x ${item.name}`).join(', ')}</p><p class="staff-order-meta">${order.table_number ? `Table ${order.table_number}` : order.order_type === 'Dine in' ? 'Waiting for table' : 'No table required'} · ${order.status} · Bill: ${order.bill_plan === 'split_bill' ? 'Split bill' : 'Pay individual'}</p></div>${order.order_type === 'Dine in' && !order.table_number && order.status !== 'Completed' ? `<label>Assign table<select class="table-assignment" data-order-id="${order.id}"><option value="">Select available</option>${tables.map((table) => `<option value="${table}">Table ${table}</option>`).join('')}</select></label>` : ''}<label>Status<select class="order-status" data-order-id="${order.id}">${['Received','Preparing','Ready','Completed'].map((status) => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}</select></label></article>`).join('') : '<p class="empty-complaint">No orders have been received yet.</p>';
+    } catch (error) { container.innerHTML = '<p class="empty-complaint">Could not load orders.</p>'; }
+  }
+
+  document.addEventListener('change', async (event) => {
+    const control = event.target.closest('.table-assignment, .order-status');
+    if (!control) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const orderId = control.dataset.orderId;
+    const endpoint = control.classList.contains('table-assignment') ? `/orders/${orderId}/table` : `/orders/${orderId}`;
+    const body = control.classList.contains('table-assignment') ? { table_number: control.value } : { status: control.value };
+    if (!body.table_number && !body.status) return;
+    try {
+      const response = await fetch(`${API_BASE}${endpoint}`, { method: 'PATCH', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(body) });
+      const result = await response.json();
+      if (!response.ok) { showToast(result.error || 'Could not update order'); return; }
+      if (document.getElementById('page-waiter-dashboard').classList.contains('active')) loadWaiterOrders();
+    } catch (error) {
+      showToast('Could not update the order. Please try again.');
+    }
+  });
+
+  // ================================================================
+  // LOGOUT — clears chat and returns to home
+  // ================================================================
+  function handleLogout() {
+    const timedOut = arguments[0] === true;
+    clearTimeout(inactivityTimer);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    currentUser = null;
+    showToast(timedOut ? 'You were signed out after 10 minutes of inactivity.' : 'Signed out successfully. See you soon!');
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages) chatMessages.innerHTML = '';
+    setTimeout(() => showPage('home'), 1200);
+  }
+
+  document.querySelectorAll('[data-manager-section]').forEach((tab) => tab.addEventListener('click', () => {
+    document.querySelectorAll('[data-manager-section]').forEach((item) => item.classList.toggle('active', item === tab));
+    document.querySelectorAll('.manager-section-panel').forEach((panel) => panel.classList.toggle('hidden', panel.id !== tab.dataset.managerSection));
+    if (tab.dataset.managerSection === 'manager-complaints-section') markComplaintsAttended();
+  }));
+
+  document.getElementById('manager-menu-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const resultMessage = document.getElementById('manager-menu-result');
+    const formData = new FormData(form);
+    ['name', 'category', 'description'].forEach((field) => {
+      formData.set(field, String(formData.get(field) || '').trim());
+    });
+    submitButton.disabled = true;
+    resultMessage.textContent = 'Adding menu item...';
+    try {
+      const response = await fetch(`${API_BASE}/menu-items`, { method: 'POST', headers: authHeaders(), body: formData });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || `Could not add menu item (HTTP ${response.status}).`);
+      addMenuItemToCustomerMenus(result);
+      localStorage.setItem('bundu_menu_items_updated', String(Date.now()));
+      form.reset();
+      resultMessage.textContent = `${result.name} was added to the customer menu.`;
+      await loadMenuItems();
+      loadManagerDashboard();
+      showToast('Menu item added to the customer menu.');
+    } catch (error) {
+      resultMessage.textContent = error.message || 'Could not connect to the menu service.';
+      showToast(resultMessage.textContent);
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  document.getElementById('manager-promotion-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const response = await fetch(`${API_BASE}/promotions`, { method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify({ menu_item_id: Number(document.getElementById('manager-promotion-item').value), discount_percent: Number(document.getElementById('manager-promotion-discount').value), start_at: document.getElementById('manager-promotion-start').value, end_at: document.getElementById('manager-promotion-end').value }) });
+    const result = await response.json();
+    if (!response.ok) return showToast(result.error || 'Could not create promotion.');
+    event.target.reset(); loadManagerPromotions(); showToast('Promotion created.');
+  });
+
+  document.getElementById('manager-shift-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const response = await fetch(`${API_BASE}/shifts`, { method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify({ staff_name: document.getElementById('manager-shift-name').value.trim(), role: document.getElementById('manager-shift-role').value.trim(), shift_label: document.getElementById('manager-shift-label').value.trim(), status: document.getElementById('manager-shift-status').value }) });
+    const result = await response.json();
+    if (!response.ok) return showToast(result.error || 'Could not create shift.');
+    event.target.reset(); loadManagerShifts(); showToast('Shift added.');
+  });
+
+  document.addEventListener('click', async (event) => {
+    const deleteButton = event.target.closest('[data-delete-menu]');
+    if (deleteButton) {
+      const response = await fetch(`${API_BASE}/menu-items/${deleteButton.dataset.deleteMenu}`, { method: 'DELETE', headers: authHeaders() });
+      if (response.ok) { await loadMenuItems(); loadManagerDashboard(); showToast('Menu item deleted.'); }
+    }
+    const responseButton = event.target.closest('[data-send-complaint]');
+    if (responseButton) {
+      const id = responseButton.dataset.sendComplaint;
+      const responseText = document.querySelector(`[data-complaint-response="${id}"]`).value.trim();
+      const response = await fetch(`${API_BASE}/complaints/${id}/response`, { method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify({ response: responseText }) });
+      if (response.ok) { loadManagerDashboard(); showToast('Complaint response saved.'); }
+    }
+  });
+
+  // ================================================================
+  // TOAST NOTIFICATION — shows a small popup message
+  // ================================================================
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  loadMenuItems();
+  setInterval(() => {
+    if (document.visibilityState === 'visible') loadMenuItems();
+  }, 30000);
+  updateCartCounts();
+  restoreOrderConfirmation();
+  startInactivityTracking();
+
+</script>
+
+</body>
+</html>
